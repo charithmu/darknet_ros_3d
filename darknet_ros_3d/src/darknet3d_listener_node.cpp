@@ -41,58 +41,44 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "darknet_3d_listener");
-  darknet_ros_3d::Darknet3DListener listener("base_footprint");
+  ros::init(argc, argv, "darknet_3d_mapper");
+  darknet_ros_3d::Darknet3DListener darknet3dlistner;
 
-  darknet_ros_3d::ObjectConfiguration person_conf;
+  darknet_ros_3d::ObjectConfiguration person;
 
-  person_conf.min_probability = 0.7;
-  person_conf.min_x = 1.0;
-  person_conf.max_x = 4.0;
-  person_conf.min_y = -2.0;
-  person_conf.max_y = 2.0;
-  person_conf.min_z = 0.0;
-  person_conf.max_z = 2.0;
-  person_conf.min_size_x = 0.2;
-  person_conf.min_size_y = 0.2;
-  person_conf.min_size_z = 0.2;
-  person_conf.max_size_x = 0.8;
-  person_conf.max_size_y = 0.8;
-  person_conf.max_size_z = 1.9;
-  person_conf.dynamic = true;
-  person_conf.max_seconds = ros::Duration(2.0);
+  person.min_probability = 0.7;
+  
+  person.min_x = 1.0;
+  person.max_x = 4.0;
+  person.min_y = -2.0;
 
-  darknet_ros_3d::ObjectConfiguration cup_conf;
+  person.max_y = 2.0;
+  person.min_z = 0.0;
+  person.max_z = 2.0;
 
-  cup_conf.min_probability = 0.4;
-  cup_conf.min_x = 0.0;
-  cup_conf.max_x = 2.0;
-  cup_conf.min_y = -2.0;
-  cup_conf.max_y = 2.0;
-  cup_conf.min_z = 0.0;
-  cup_conf.max_z = 2.0;
-  cup_conf.min_size_x = 0.1;
-  cup_conf.min_size_y = 0.1;
-  cup_conf.min_size_z = 0.1;
-  cup_conf.max_size_x = 0.4;
-  cup_conf.max_size_y = 0.4;
-  cup_conf.max_size_z = 0.4;
-  cup_conf.dynamic = true;
-  cup_conf.max_seconds = ros::Duration(2.0);
+  person.min_size_x = 0.3;
+  person.min_size_y = 0.3;
+  person.min_size_z = 0.6;
 
-  listener.add_class("person", person_conf);
-  listener.set_active();
+  person.max_size_x = 1.0;
+  person.max_size_y = 1.0;
+  person.max_size_z = 2.5;
+
+  person.dynamic = false;
+  person.max_seconds = ros::Duration(30.0); //2.0
+
+  darknet3dlistner.add_class("person", person);
+  darknet3dlistner.set_active();
 
   ros::Rate loop_rate(1);
 
   while (ros::ok())
   {
-    listener.print();
-
+    // darknet3dlistner.print();
     ros::spinOnce();
     loop_rate.sleep();
   }
-  listener.set_inactive();
+  // darknet3dlistner.set_inactive();
 
   return 0;
 }
