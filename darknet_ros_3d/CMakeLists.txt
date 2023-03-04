@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(darknet_ros_3d)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
+set(CMAKE_BUILD_TYPE Release)
 add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
@@ -37,7 +37,7 @@ include_directories(
 
 add_library(${PROJECT_NAME}
   src/darknet_ros_3d/Darknet3D.cpp
-  src/darknet_ros_3d/Darknet3DListener.cpp
+  src/darknet_ros_3d/Darknet3DFilter.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
@@ -45,8 +45,8 @@ target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_executable(darknet3d_node src/darknet3d_node.cpp)
 target_link_libraries(darknet3d_node ${catkin_LIBRARIES} ${PROJECT_NAME})
 
-add_executable(darknet_3d_mapper_node src/darknet3d_listener_node.cpp)
-target_link_libraries(darknet_3d_mapper_node ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_executable(darknet3d_filter_node src/darknet3d_filter_node.cpp)
+target_link_libraries(darknet3d_filter_node ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

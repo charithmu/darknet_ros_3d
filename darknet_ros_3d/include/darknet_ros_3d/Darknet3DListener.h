@@ -34,13 +34,14 @@
 
 /* Author: Francisco Martín fmrico@gmail.com */
 
-#ifndef DARKNET_ROS_3D_DARKNET3DLISTENER_H
-#define DARKNET_ROS_3D_DARKNET3DLISTENER_H
+#ifndef DARKNET_ROS_3D_DARKNET3DFILTER_H
+#define DARKNET_ROS_3D_DARKNET3DFILTER_H
 
 #include <ros/ros.h>
 
 #include <darknet_ros_3d_msgs/BoundingBoxes3d.h>
 #include <tf2_ros/transform_listener.h>
+#include <visualization_msgs/MarkerArray.h>
 
 #include <string>
 #include <list>
@@ -54,54 +55,51 @@ struct DetectedObject
 {
   int obj_id;
   std::string class_id;
-  float probability;
+  double probability;
   double size_x;
   double size_y;
   double size_z;
   tf2::Vector3 central_point;
-  tf2::Vector3 speed;
-  std::list<tf2::Stamped<tf2::Vector3>> history;
+  std::list<tf2::Stamped<tf2::Vector3>> history; // future use
 };
 
 struct ObjectConfiguration
 {
+  std::string class_id;
+  ros::Duration life_time; // future use
   double min_probability;
+
   double min_x;
-  double max_x;
   double min_y;
-  double max_y;
   double min_z;
+
+  double max_x;
+  double max_y;
   double max_z;
+
   double min_size_x;
-  double min_size_y;
   double min_size_z;
+  double min_size_y;
+
   double max_size_x;
   double max_size_y;
   double max_size_z;
-  bool dynamic;
-  ros::Duration max_seconds;
 };
 
-class Darknet3DListener
+class Darknet3DFilter
 {
 public:
-  explicit Darknet3DListener();
+  explicit Darknet3DFilter();
 
   void reset();
 
   void objectsCallback(const darknet_ros_3d_msgs::BoundingBoxes3d::ConstPtr& msg);
-
-  const std::vector<DetectedObject>& get_objects() {return objects_;}
-
-  // void set_map_frame(const std::string& map_frame) {map_frame_ = map_frame;}
-  // std::string get_map_frame() {return map_frame_;}
+  void timer_callback(const ros::TimerEvent& ev);
 
   void set_active() {active_ = true;}
   void set_inactive() {active_ = false;}
 
   void add_class(const std::string& class_id, const ObjectConfiguration& conf);
-
-  // void print();
 
 private:
   bool is_already_detected(const DetectedObject& object);
@@ -110,16 +108,9 @@ private:
 
   void add_object(const DetectedObject& object);
   bool same_object(const DetectedObject& obj1, const DetectedObject& obj2);
-  bool other_object(const DetectedObject& obj1, const DetectedObject& obj2);
-
   void merge_objects(DetectedObject& existing_object, const DetectedObject& new_object);
 
-  // void check_objects_history();
-  // void update_speed(DetectedObject& object);
-
-  void timer_callback(const ros::TimerEvent& ev);
-
-  void publishMarkers();
+  void publishMarker(const DetectedObject &object);
 
   // ROS
   ros::NodeHandle nh_;
@@ -127,22 +118,19 @@ private:
   ros::Publisher marker_pub_;
   tf2_ros::Buffer tfBuffer_;
   tf2_ros::TransformListener tf_listener_;
-  
-  // Param
-  std::string output_bbx3d_topic_, output_filtered_markers_topic_;
-  std::string map_frame_;
-
-  std::vector<DetectedObject> objects_;
-  std::map<std::string, ObjectConfiguration> classes_conf_;
   ros::Timer timer_;
-  int obj_id;
+  
+  // Params
+  std::string output_bbx3d_topic_, output_filtered_markers_topic_, map_frame_;
 
-  bool active_;
-
+  std::map<std::string, ObjectConfiguration> classes_conf_;
+  std::vector<DetectedObject> objects_;
   std::vector<visualization_msgs::Marker> markers_;
+  int id_itr_;
+  bool active_;
 
 };
 
 };  // namespace darknet_ros_3d
 
-#endif  // DARKNET_ROS_3D_DARKNET3DLISTENER_H
+#endif  // DARKNET_ROS_3D_DARKNET3DFILTER_H

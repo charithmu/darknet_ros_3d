@@ -8,49 +8,23 @@
     to Darknet ROS bounding boxes and to depth camera information.
     Then, it publicates in topic "/darknet_ros3d/bounding_boxes" 3d bounding boxes
     adding the distances are they
-
   </description>
 
   <maintainer email="fergonzaramos@yahoo.es">Fernando González</maintainer>
+  <maintainer email="eranga.charith@gmail.com">Charith Munasinghe</maintainer>
 
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>
-  <build_depend>darknet_ros_msgs</build_depend>
-  <build_depend>darknet_ros_3d_msgs</build_depend>
-  <build_depend>tf2_geometry_msgs</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>tf2_ros</build_depend>
-  <build_depend>pcl_ros</build_depend>
-  <build_depend>pcl_conversions</build_depend>
-  <build_depend>roslint</build_depend>
-
-
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>darknet_ros_msgs</build_export_depend>
-  <build_export_depend>tf2_geometry_msgs</build_export_depend>
-  <build_export_depend>darknet_ros_3d_msgs</build_export_depend>
-  <build_export_depend>sensor_msgs</build_export_depend>
-  <build_export_depend>tf2_ros</build_export_depend>
-  <build_export_depend>pcl_ros</build_export_depend>
-  <build_export_depend>pcl_conversions</build_export_depend>
-  <build_export_depend>roslint</build_export_depend>
-
-
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>tf2_geometry_msgs</exec_depend>
-  <exec_depend>darknet_ros_msgs</exec_depend>
-  <exec_depend>darknet_ros_3d_msgs</exec_depend>
-  <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>tf2_ros</exec_depend>
-  <exec_depend>pcl_ros</exec_depend>
-  <exec_depend>pcl_conversions</exec_depend>
-  <exec_depend>roslint</exec_depend>
-
+  <depend>roscpp</depend>
+  <depend>darknet_ros_msgs</depend>
+  <depend>darknet_ros_3d_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>pcl_ros</depend>
+  <depend>pcl_conversions</depend>
+  <depend>roslint</depend>
   <depend>visualization_msgs</depend>
-
-  <export>
-  </export>
 </package>

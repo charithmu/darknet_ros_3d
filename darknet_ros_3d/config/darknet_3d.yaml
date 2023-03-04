@@ -1,7 +1,96 @@
 darknet_ros_topic: /darknet_ros/bounding_boxes
+point_cloud_topic: /summit_xl/front_rgbd_camera/depth/points
+
 output_bbx3d_topic: /darknet_ros_3d/bounding_boxes
-point_cloud_topic: /camera/depth_registered/points
-working_frame: camera_link
+output_3d_markers_topic: /darknet_ros_3d/markers
+output_filtered_markers_topic: /darknet_ros_3d/filtered_markers
+
+working_frame: summit_xl_front_rgbd_camera_link
+map_frame: summit_xl_map
+
 mininum_detection_thereshold: 0.3
-minimum_probability: 0.3
-interested_classes: ["person", "italian_biscotti", "smoothie", "mango_juice", "crisps", "water", "sandwich", "toastie", "veggie_pot", "wrap", "espresso", "cappuccino", "americano"]
+minimum_probability: 0.5
+interested_classes:
+  [
+    "person",
+    # "bicycle",
+    # "car",
+    # "motorbike",
+    # "aeroplane",
+    # "bus",
+    # "train",
+    # "truck",
+    # "boat",
+    # "traffic light",
+    # "fire hydrant",
+    # "stop sign",
+    # "parking meter",
+    # "bench",
+    "bird",
+    "cat",
+    "dog",
+    # "horse",
+    # "sheep",
+    # "cow",
+    # "elephant",
+    # "bear",
+    # "zebra",
+    # "giraffe",
+    "backpack",
+    # "umbrella",
+    # "handbag",
+    # "tie",
+    # "suitcase",
+    # "frisbee",
+    # "skis",
+    # "snowboard",
+    # "sports ball",
+    # "kite",
+    # "baseball bat",
+    # "baseball glove",
+    # "skateboard",
+    # "surfboard",
+    # "tennis racket",
+    # "bottle",
+    # "wine glass",
+    # "cup",
+    # "fork",
+    # "knife",
+    # "spoon",
+    # "bowl",
+    # "banana",
+    # "apple",
+    # "sandwich",
+    # "orange",
+    # "broccoli",
+    # "carrot",
+    # "hot dog",
+    # "pizza",
+    # "donut",
+    # "cake",
+    # "chair",
+    # "sofa",
+    # "pottedplant",
+    # "bed",
+    # "diningtable",
+    # "toilet",
+    # "tvmonitor",
+    # "laptop",
+    # "mouse",
+    # "remote",
+    # "keyboard",
+    "cell phone",
+    # "microwave",
+    # "oven",
+    # "toaster",
+    # "sink",
+    # "refrigerator",
+    "book",
+    # "clock",
+    # "vase",
+    # "scissors",
+    # "teddy bear",
+    # "hair drier",
+    # "toothbrush",
+  ]
+

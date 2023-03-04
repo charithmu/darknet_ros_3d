@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="darknet_ros_3d" type="darknet_3d_filter_node" name="darknet3d_filter" output="screen">
+    <param name="map_frame" value="summit_xl_map"/>
+  </node>
+</launch>

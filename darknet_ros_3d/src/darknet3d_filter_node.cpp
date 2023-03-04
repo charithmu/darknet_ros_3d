@@ -14,7 +14,7 @@
 *      copyright notice, this list of conditions and the following
 *      disclaimer in the documentation and/or other materials provided
 *      with the distribution.
-*    * Neither the name of Intelligent Robotics nor the names of its
+*    * Neither the name of Intelligent Robotics nor the names of itsdarknet3dfilter
 *      contributors may be used to endorse or promote products derived
 *      from this software without specific prior written permission.
 
@@ -37,17 +37,19 @@
 
 #include <ros/ros.h>
 
-#include "darknet_ros_3d/Darknet3DListener.h"
+#include "darknet_ros_3d/Darknet3DFilter.h"
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "darknet_3d_mapper");
-  darknet_ros_3d::Darknet3DListener darknet3dlistner;
+  ros::init(argc, argv, "darknet_3d_filter");
+  darknet_ros_3d::Darknet3DFilter darknet3dfilter;
 
   darknet_ros_3d::ObjectConfiguration person;
-
-  person.min_probability = 0.7;
   
+  person.class_id = "person";
+  person.min_probability = 0.95;
+  person.life_time = ros::Duration(30.0); // not used
+
   person.min_x = 1.0;
   person.max_x = 4.0;
   person.min_y = -2.0;
@@ -64,21 +66,15 @@ int main(int argc, char **argv)
   person.max_size_y = 1.0;
   person.max_size_z = 2.5;
 
-  person.dynamic = false;
-  person.max_seconds = ros::Duration(30.0); //2.0
-
-  darknet3dlistner.add_class("person", person);
-  darknet3dlistner.set_active();
+  darknet3dfilter.add_class("person", person);
 
   ros::Rate loop_rate(1);
 
   while (ros::ok())
   {
-    // darknet3dlistner.print();
     ros::spinOnce();
     loop_rate.sleep();
   }
-  // darknet3dlistner.set_inactive();
 
   return 0;
 }
