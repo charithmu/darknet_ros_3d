@@ -14,17 +14,17 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   darknet_ros_msgs
-  gb_visual_detection_3d_msgs
+  darknet_ros_3d_msgs
   sensor_msgs
   tf2_ros
   tf2_geometry_msgs
   pcl_ros
   pcl_conversions
-  roslint
+  visualization_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS ${PACKAGE_DEPENDENCIES}
+  CATKIN_DEPENDS ${PACKAGE_DEPENDENCIES} visualization_msgs
   DEPENDS PCL
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
@@ -45,15 +45,8 @@ target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 add_executable(darknet3d_node src/darknet3d_node.cpp)
 target_link_libraries(darknet3d_node ${catkin_LIBRARIES} ${PROJECT_NAME})
 
-add_executable(darknet3d_listener_node test/darknet3d_listener_node.cpp)
-target_link_libraries(darknet3d_listener_node ${catkin_LIBRARIES} ${PROJECT_NAME})
-
-
-roslint_cpp(
-  src/darknet_ros_3d/Darknet3D.cpp include/darknet_ros_3d/Darknet3D.h
-  src/darknet_ros_3d/Darknet3DListener.cpp include/darknet_ros_3d/Darknet3DListener.h
-  src/darknet3d_node.cpp
-)
+add_executable(darknet_3d_mapper_node src/darknet3d_listener_node.cpp)
+target_link_libraries(darknet_3d_mapper_node ${catkin_LIBRARIES} ${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
