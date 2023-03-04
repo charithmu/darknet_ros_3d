@@ -55,13 +55,19 @@ Darknet3D::Darknet3D():
 {
   initParams();
 
-  darknet3d_pub_ = nh_.advertise<gb_visual_detection_3d_msgs::BoundingBoxes3d>(output_bbx3d_topic_, 100);
-  markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("/darknet_ros_3d/markers", 100);
+  darknet3d_pub_ = nh_.advertise<darknet_ros_3d_msgs::BoundingBoxes3d>(output_bbx3d_topic_, 100);
+  markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>(output_3d_markers_topic_, 100);
 
   yolo_sub_ = nh_.subscribe(input_bbx_topic_, 1, &Darknet3D::darknetCb, this);
   pointCloud_sub_ = nh_.subscribe(pointcloud_topic_, 1, &Darknet3D::pointCloudCb, this);
 
-  last_detection_ts_ = ros::Time::now() - ros::Duration(60.0);
+  last_detection_ts_ = ros::Time::now();
+  // try {
+  //   last_detection_ts_ = ros::Time::now(); // - ros::Duration(60.0);
+  // }
+  // catch(std::runtime_error& ex) {
+  //   ROS_ERROR("Place01 Exception: [%s]", ex.what());
+  // }
 }
 
 void
@@ -69,6 +75,7 @@ Darknet3D::initParams()
 {
   input_bbx_topic_ = "/darknet_ros/bounding_boxes";
   output_bbx3d_topic_ = "/darknet_ros_3d/bounding_boxes";
+  output_3d_markers_topic_ = "/darknet_ros_3d/markers";
   pointcloud_topic_ = "/camera/depth_registered/points";
   working_frame_ = "/camera_link";
   mininum_detection_thereshold_ = 0.5f;
@@ -76,6 +83,7 @@ Darknet3D::initParams()
 
   nh_.param("darknet_ros_topic", input_bbx_topic_, input_bbx_topic_);
   nh_.param("output_bbx3d_topic", output_bbx3d_topic_, output_bbx3d_topic_);
+  nh_.param("output_3d_markers_topic", output_3d_markers_topic_, output_3d_markers_topic_);
   nh_.param("point_cloud_topic", pointcloud_topic_, pointcloud_topic_);
   nh_.param("working_frame", working_frame_, working_frame_);
   nh_.param("mininum_detection_thereshold", mininum_detection_thereshold_, mininum_detection_thereshold_);
@@ -99,7 +107,7 @@ Darknet3D::darknetCb(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
 void
 Darknet3D::calculate_boxes(const sensor_msgs::PointCloud2& cloud_pc2,
     const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud_pcl,
-    gb_visual_detection_3d_msgs::BoundingBoxes3d* boxes)
+    darknet_ros_3d_msgs::BoundingBoxes3d* boxes)
 {
   boxes->header.stamp = cloud_pc2.header.stamp;
   boxes->header.frame_id = working_frame_;
@@ -148,7 +156,7 @@ Darknet3D::calculate_boxes(const sensor_msgs::PointCloud2& cloud_pc2,
         minz = std::min(point.z, minz);
       }
 
-    gb_visual_detection_3d_msgs::BoundingBox3d bbx_msg;
+    darknet_ros_3d_msgs::BoundingBox3d bbx_msg;
     bbx_msg.Class = bbx.Class;
     bbx_msg.probability = bbx.probability;
     bbx_msg.xmin = minx;
@@ -165,8 +173,16 @@ Darknet3D::calculate_boxes(const sensor_msgs::PointCloud2& cloud_pc2,
 void
 Darknet3D::update()
 {
+  // try{
+  //   if ((ros::Time::now() - last_detection_ts_).toSec() > 2.0)
+  //     return;
+  // }
+  // catch(std::runtime_error& ex) {
+  //   ROS_ERROR("Place02 Exception: [%s]", ex.what());
+  // }
+
   if ((ros::Time::now() - last_detection_ts_).toSec() > 2.0)
-    return;
+  return;
 
   if ((darknet3d_pub_.getNumSubscribers() == 0) &&
       (markers_pub_.getNumSubscribers() == 0))
@@ -187,7 +203,7 @@ Darknet3D::update()
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcrgb(new pcl::PointCloud<pcl::PointXYZRGB>);
   pcl::fromROSMsg(local_pointcloud, *pcrgb);
 
-  gb_visual_detection_3d_msgs::BoundingBoxes3d msg;
+  darknet_ros_3d_msgs::BoundingBoxes3d msg;
 
   calculate_boxes(local_pointcloud, pcrgb, &msg);
 
@@ -197,7 +213,7 @@ Darknet3D::update()
 }
 
 void
-Darknet3D::publish_markers(const gb_visual_detection_3d_msgs::BoundingBoxes3d& boxes)
+Darknet3D::publish_markers(const darknet_ros_3d_msgs::BoundingBoxes3d& boxes)
 {
   visualization_msgs::MarkerArray msg;
 
@@ -229,7 +245,7 @@ Darknet3D::publish_markers(const gb_visual_detection_3d_msgs::BoundingBoxes3d& b
     bbx_marker.lifetime = ros::Duration(0.5);
 
     msg.markers.push_back(bbx_marker);
-  }
+    }
 
   markers_pub_.publish(msg);
 }
