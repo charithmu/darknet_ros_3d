@@ -207,7 +207,7 @@ namespace darknet_ros_3d
     // double min_p = oc.min_probability;
     // double p = object.probability;
     // m.color.a = (p - min_p) / (100 - min_p) * 0.9 + 0.1; // Normalize the p value to 0.1(when min_p) to 1.0(when p=1.0)
-    m.color.a = 1.0
+    m.color.a = 1.0;
 
     m.lifetime = ros::Duration(0);
     // m.frame_locked = true;
